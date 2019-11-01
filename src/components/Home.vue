@@ -1,7 +1,7 @@
 <template>
   <div>
       <div class="menu">
-        <Menu :theme="theme3" active-name="3" @on-select="jumpToProjectManager" class="menu" width="100%">
+        <Menu :theme="theme3" active-name="3" :open-names="['1','2']" @on-select="jumpToProjectManager" class="menu" width="100%">
           <Input v-model="schemaTitleFilter" placeholder="Enter something..." style="margin-left: 5%; width:90%" />
           <Submenu name="1" >
             <template slot="title">
@@ -9,7 +9,7 @@
                 Query
             </template>
             <template v-for="(api, index) of queryApis">
-              <MenuItem :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
+              <MenuItem :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1 || api.description.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
                   <div class="api-name">
                     <Icon type="md-document" />
                     {{api.name}} 
@@ -26,7 +26,7 @@
                 Mutation
             </template>
             <template v-for="(api, index) of mutationApis">
-              <MenuItem :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
+              <MenuItem :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1 || api.description.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
                   <div class="api-name">
                     <Icon type="md-document" />
                     {{api.name}} 
@@ -41,26 +41,112 @@
         </Menu>
       </div>
       <div class="info">
-        <router-view class="router-view" style="margin:0 auto"/>
+        <div style="padding:0 100px">
+          <Divider>请求参数</Divider>
+          <Table stripe :columns="apiInfo.reqInfo.columns" :data="apiInfo.reqInfo.data"></Table>
+          <Divider>响应参数</Divider>
+          <Table stripe :columns="apiInfo.respInfo.columns" :data="apiInfo.respInfo.data"></Table>
+        </div>
       </div>
   </div>
 </template>
 <script>
   import axios from 'axios'
+  import expandRow from './TableExpand.vue';
   var app = null;
   export default {
+      components: { expandRow },
       data () {
           return {
               theme3: 'light',
               queryApis: [],
+              queryApiMap:{},
               mutationApis: [],
+              mutationApiMap:{},
               schemaMap:{},
               schemaTitleFilter:'',
+              apiInfo:{
+                reqInfo:{
+                  columns: [
+                      {
+                          type: 'expand',
+                          width: 50,
+                          render: (h, params) => {
+                              return h(expandRow, {
+                                  props: {
+                                      row: params.row
+                                  }
+                              })
+                          }
+                      },
+                      {
+                          title: 'Name',
+                          key: 'name'
+                      },
+                      {
+                          title: 'Type',
+                          key: 'type'
+                      },
+                      {
+                          title: 'Desc',
+                          key: 'desc'
+                      }
+                  ],
+                  data: [ ]
+                },
+                respInfo:{
+                  columns:[
+                      {
+                          title: 'Type',
+                          key: 'type'
+                      },
+                      {
+                          title: 'Desc',
+                          key: 'desc'
+                      }
+                  ],
+                  data: [ ]
+                }
+              }
           }
       },
       methods:{
         jumpToProjectManager(e){
-          app.$router.push({name:'ApiInfo', params: { name: e }})
+          //clear
+          app.apiInfo.reqInfo.data = []
+          app.apiInfo.respInfo.data = []
+
+          var api = app.queryApiMap[e]
+          console.log(api)
+          var args = api.args
+          if(args.length > 0){
+            for( var i = 0; i <args.length; i ++){
+              var arg = args[i]
+              var argName = arg.name
+              var data = app.parseGraphqlArgType(arg.type)
+              data.name = argName
+              app.apiInfo.reqInfo.data.push(data)
+            }
+          }
+
+          var respType = api.type
+          if(respType){
+            var data = app.parseGraphqlArgType(respType)
+            app.apiInfo.respInfo.data.push(data)
+          }
+
+        },
+        parseGraphqlArgType(argType){
+          var argTypeName = argType.name
+          var argName = ""
+          if(argType.ofType){
+            argTypeName = argType.ofType.name
+          }
+          var schemaObj = app.schemaMap[argTypeName]
+          return {
+            type: schemaObj.name,
+            desc: schemaObj.description,
+          }
         },
         getGraphqlSchemaInfos(endpoint){
           axios({
@@ -77,13 +163,21 @@
               for(var i = 0; i < schemaTypes.length; i ++){
                 var schemaType = schemaTypes[i]
                 app.schemaMap[schemaType.name] = schemaType
-
               }
-              console.log(app.schemaMap)
               app.queryApis = app.schemaMap["Query"].fields
+              for(var i = 0; i <  app.queryApis.length; i ++){
+                var api =  app.queryApis[i]
+                app.queryApiMap[api.name] = api
+              }
               app.mutationApis = app.schemaMap["Mutation"].fields
-              console.log("13123123123")
+              for(var i = 0; i <  app.mutationApis.length; i ++){
+                var api =  app.mutationApis[i]
+                app.mutationApiMap[api.name] = api
+              }
               console.log(app.queryApis)
+              console.log(app.queryApiMap)
+              console.log(app.mutationApis)
+              console.log(app.mutationApiMap)
           })
           .catch(function (error) {
               app.$Message.error('err: ' + error);

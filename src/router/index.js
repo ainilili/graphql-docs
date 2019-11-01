@@ -6,7 +6,6 @@ import 'iview/dist/styles/iview.css'
 
 
 import Home from '@/components/Home'
-import ApiInfo from '@/components/ApiInfo'
 
 Vue.use(Router)
 Vue.use(iView)
@@ -19,14 +18,7 @@ var r = new Router({
       path: '/',
       name: 'Home',
       component: Home,
-      children:[
-        {
-          path: '/info/:name',
-          name: 'ApiInfo',
-          component: ApiInfo,
-        },
-
-      ]
+      children:[ ]
     }
   ]
 })
