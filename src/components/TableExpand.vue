@@ -8,16 +8,16 @@
         <template v-for="(field, index) of row.fields">
             <Row class="expand-row">
                 <Col span="8">
-                    <span class="expand-key">Job: </span>
+                    <span class="expand-key">name: </span>
                     <span class="expand-value">{{ field.name }}</span>
                 </Col>
                 <Col span="8">
-                    <span class="expand-key">Interest: </span>
-                    <span class="expand-value">{{ row.interest }}</span>
+                    <span class="expand-key">type: </span>
+                    <span class="expand-value">{{ field.description }}</span>
                 </Col>
                 <Col span="8">
-                    <span class="expand-key">Birthday: </span>
-                    <span class="expand-value">{{ row.birthday }}</span>
+                    <span class="expand-key">desc: </span>
+                    <span class="expand-value">{{ field.type }}</span>
                 </Col>
             </Row>
         </template>
