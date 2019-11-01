@@ -117,7 +117,6 @@
           app.apiInfo.respInfo.data = []
 
           var api = app.queryApiMap[e]
-          console.log(api)
           var args = api.args
           if(args.length > 0){
             for( var i = 0; i <args.length; i ++){
@@ -143,9 +142,11 @@
             argTypeName = argType.ofType.name
           }
           var schemaObj = app.schemaMap[argTypeName]
+          console.log(schemaObj)
           return {
             type: schemaObj.name,
             desc: schemaObj.description,
+            fields: schemaObj.inputFields,
           }
         },
         getGraphqlSchemaInfos(endpoint){
