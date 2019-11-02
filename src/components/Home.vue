@@ -58,56 +58,67 @@
       components: { expandRow },
       data () {
           return {
-              theme3: 'light',
-              queryApis: [],
-              queryApiMap:{},
-              mutationApis: [],
-              mutationApiMap:{},
-              schemaMap:{},
-              schemaTitleFilter:'',
-              apiInfo:{
-                reqInfo:{
-                  columns: [
-                      {
-                          type: 'expand',
-                          width: 50,
-                          render: (h, params) => {
-                              return h(expandRow, {
-                                  props: {
-                                      row: params.row
-                                  }
-                              })
-                          }
-                      },
-                      {
-                          title: 'Name',
-                          key: 'name'
-                      },
-                      {
-                          title: 'Type',
-                          key: 'type'
-                      },
-                      {
-                          title: 'Desc',
-                          key: 'desc'
+            theme3: 'light',
+            queryApis: [],
+            queryApiMap:{},
+            mutationApis: [],
+            mutationApiMap:{},
+            schemaMap:{},
+            schemaTitleFilter:'',
+            apiInfo:{
+              reqInfo:{
+                columns: [
+                    {
+                      type: 'expand',
+                      width: 50,
+                      render: (h, params) => {
+                          return h(expandRow, {
+                              props: {
+                                  row: params.row
+                              }
+                          })
                       }
-                  ],
-                  data: [ ]
-                },
-                respInfo:{
-                  columns:[
-                      {
-                          title: 'Type',
-                          key: 'type'
-                      },
-                      {
-                          title: 'Desc',
-                          key: 'desc'
+                    },
+                    {
+                        title: 'Name',
+                        key: 'name'
+                    },
+                    {
+                        title: 'Type',
+                        key: 'type'
+                    },
+                    {
+                        title: 'Desc',
+                        key: 'desc'
+                    }
+                ],
+                data: [ ]
+              },
+              respInfo:{
+                columns:[
+                    {
+                      type: 'expand',
+                      width: 50,
+                      render: (h, params) => {
+                          return h(expandRow, {
+                              props: {
+                                  row: params.row
+                              }
+                          })
                       }
-                  ],
-                  data: [ ]
-                }
+                    },
+                    {
+                        title: 'Type',
+                        key: 'type'
+                    },
+                    {
+                        title: 'Desc',
+                        key: 'desc'
+                    }
+                ],
+                data: [ ]
               }
+            }
           }
       },
       methods:{
@@ -117,6 +128,9 @@
           app.apiInfo.respInfo.data = []
 
           var api = app.queryApiMap[e]
+          if(! api){
+            api = app.mutationApiMap[e]
+          }
           var args = api.args
           if(args.length > 0){
             for( var i = 0; i <args.length; i ++){
@@ -142,11 +156,19 @@
             argTypeName = argType.ofType.name
           }
           var schemaObj = app.schemaMap[argTypeName]
-          console.log(schemaObj)
+          var typeName = expandRow.methods.parserSchemaType(argType)
+
+          var fields = schemaObj.inputFields
+          if (! fields || fields.length == 0){
+            fields = schemaObj.fields
+          }
+
           return {
-            type: schemaObj.name,
+            type: typeName,
             desc: schemaObj.description,
-            fields: schemaObj.inputFields,
+            fields: fields,
+            schemaMap: app.schemaMap,
+            _disableExpand: ! fields || fields.length == 0
           }
         },
         getGraphqlSchemaInfos(endpoint){
@@ -175,10 +197,6 @@
                 var api =  app.mutationApis[i]
                 app.mutationApiMap[api.name] = api
               }
-              console.log(app.queryApis)
-              console.log(app.queryApiMap)
-              console.log(app.mutationApis)
-              console.log(app.mutationApiMap)
           })
           .catch(function (error) {
               app.$Message.error('err: ' + error);
@@ -188,7 +206,7 @@
       created(){
         app = this
         // this.jumpToProjectManager(3)
-        this.getGraphqlSchemaInfos('http://api.bjx.cloud/api/task')
+        this.getGraphqlSchemaInfos('http://127.0.0.1:12000/api/task')
       }
   }
 </script>
