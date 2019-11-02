@@ -208,7 +208,7 @@
       created(){
         app = this
         localStorage.clear();
-        this.getGraphqlSchemaInfos(app.$route.params.endpoint)
+        this.getGraphqlSchemaInfos(app.$route.query.endpoint)
       }
   }
 </script>

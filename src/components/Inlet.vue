@@ -27,7 +27,7 @@
                 }
             })
             .then(function (response) {
-                app.$router.push({name:'Home', params:{endpoint: app.graphqlEndPointer}})
+                app.$router.push({name:'Home', query:{endpoint: app.graphqlEndPointer}})
             })
             .catch(function (error) {
                 app.$Message.error('endpoint err: ' + error);
