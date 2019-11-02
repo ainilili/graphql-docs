@@ -1,13 +1,14 @@
 <template>
   <div id="app">
     <div class="banner" >
-        <h2 style="float:left;cursor:pointer">Graphql Docs</h2>
+        <h2 style="float:left;cursor:pointer" @click="jumpToInlet">Graphql Docs</h2>
     </div>
     <router-view class="router-view"/>
   </div>
 </template>
 
 <script>
+var app = null
 export default {
   name: 'App',
   data (){
@@ -16,10 +17,12 @@ export default {
     }
   },
   methods: {
-   
+   jumpToInlet(){
+      app.$router.push({name:'Inlet'})
+   }
   },
   created (){
-    
+    app = this
   },
   watch: {
     "$route": function (to, from) {

@@ -27,6 +27,7 @@
                 }
             })
             .then(function (response) {
+                localStorage.setItem('endpoint', app.graphqlEndPointer)
                 app.$router.push({name:'Home', query:{endpoint: app.graphqlEndPointer}})
             })
             .catch(function (error) {
@@ -36,6 +37,7 @@
       },
       created(){
         app = this
+        app.graphqlEndPointer = localStorage.getItem('endpoint')
       }
   }
 </script>

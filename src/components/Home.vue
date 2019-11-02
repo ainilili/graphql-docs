@@ -207,7 +207,7 @@
       },
       created(){
         app = this
-        localStorage.clear();
+        localStorage.removeItem('schemaMap');
         this.getGraphqlSchemaInfos(app.$route.query.endpoint)
       }
   }
