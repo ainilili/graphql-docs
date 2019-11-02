@@ -2,7 +2,7 @@
   <div>
       <div class="menu">
         <Menu :theme="theme3" active-name="3" :open-names="['1','2']" @on-select="jumpToProjectManager" class="menu" width="100%">
-          <Input v-model="schemaTitleFilter" placeholder="Enter something..." style="margin-left: 5%; width:90%" />
+          <Input v-model="graphqlEndPointer" placeholder="搜索" style="margin-left: 5%; width:90%" />
           <Submenu name="1" >
             <template slot="title">
                 <Icon type="ios-analytics" />
@@ -167,7 +167,7 @@
             type: typeName,
             desc: schemaObj.description,
             fields: fields,
-            schemaMap: app.schemaMap,
+            // schemaMap: app.schemaMap,
             _disableExpand: ! fields || fields.length == 0
           }
         },
@@ -197,6 +197,8 @@
                 var api =  app.mutationApis[i]
                 app.mutationApiMap[api.name] = api
               }
+
+              localStorage.setItem('schemaMap', JSON.stringify(app.schemaMap))
           })
           .catch(function (error) {
               app.$Message.error('err: ' + error);
@@ -205,8 +207,8 @@
       },
       created(){
         app = this
-        // this.jumpToProjectManager(3)
-        this.getGraphqlSchemaInfos('http://127.0.0.1:12000/api/task')
+        localStorage.clear();
+        this.getGraphqlSchemaInfos(app.$route.params.endpoint)
       }
   }
 </script>
@@ -214,5 +216,5 @@
 .menu {float:left; width: 20%}
 .menu .api-name{}
 .menu .api-desc{margin-top: 10px; color: #888; font-size: 13px}
-.info {float:right; width: 80%;}
+.info {width: 80%; position: fixed; top: 10px; left: 20%}
 </style>

@@ -82,6 +82,12 @@
         },
         created(){
             app = this
+            var schemaMapJson = localStorage.getItem('schemaMap')
+            if(!schemaMapJson){
+                app.$Message.error("请刷新页面重试")
+            }
+            var schemaMap = JSON.parse(schemaMapJson)
+
             if (app.row.fields){
                 for (var i = 0; i < app.row.fields.length; i ++){
                     var field = app.row.fields[i]
@@ -94,11 +100,7 @@
                     }else if (argType.ofType){
                         argTypeName = argType.ofType.name
                     }
-                    console.log("f", field)
-                    console.log(1, argTypeName)
-                    console.log(2,app.row)
-                    var schemaObj = app.row.schemaMap[argTypeName]
-                    console.log(3,schemaObj)
+                    var schemaObj = schemaMap[argTypeName]
 
                     var fields = schemaObj.inputFields
                     if (! fields || fields.length == 0){
@@ -111,7 +113,6 @@
                         desc: field.description,
                         fields: fields,
                         _disableExpand: ! fields || fields.length == 0,
-                        schemaMap: app.row.schemaMap,
                     })
                 }
             }

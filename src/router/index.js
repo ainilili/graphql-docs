@@ -6,6 +6,7 @@ import 'iview/dist/styles/iview.css'
 
 
 import Home from '@/components/Home'
+import Inlet from '@/components/Inlet'
 
 Vue.use(Router)
 Vue.use(iView)
@@ -15,9 +16,15 @@ Vue.use(ElementUI)
 var r = new Router({
   routes: [
     {
-      path: '/',
+      path: '/Home',
       name: 'Home',
       component: Home,
+      children:[ ]
+    },
+    {
+      path: '/',
+      name: 'Inlet',
+      component: Inlet,
       children:[ ]
     }
   ]
