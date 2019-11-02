@@ -2,7 +2,7 @@
   <div>
       <div class="menu">
         <Menu :theme="theme3" active-name="3" :open-names="['1','2']" @on-select="jumpToProjectManager" class="menu" width="100%">
-          <Input v-model="graphqlEndPointer" placeholder="搜索" style="margin-left: 5%; width:90%" />
+          <Input v-model="schemaTitleFilter" placeholder="搜索" style="margin-left: 5%; width:90%" />
           <Submenu name="1" >
             <template slot="title">
                 <Icon type="ios-analytics" />
@@ -11,7 +11,7 @@
             <template v-for="(api, index) of queryApis">
               <MenuItem :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1 || api.description.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
                   <div class="api-name">
-                    <Icon type="md-document" />
+                    <Icon type="md-recording" />
                     {{api.name}} 
                   </div>
                   <div class="api-desc">
@@ -28,7 +28,7 @@
             <template v-for="(api, index) of mutationApis">
               <MenuItem :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1 || api.description.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
                   <div class="api-name">
-                    <Icon type="md-document" />
+                    <Icon type="md-send" />
                     {{api.name}} 
                   </div>
                   <div class="api-desc">
@@ -213,8 +213,14 @@
   }
 </script>
 <style scoped>
-.menu {float:left; width: 20%}
+.menu {
+  float:left;
+  width: 20%;
+  height:1000px; 
+  LINE-HEIGHT: 20px; 
+  OVERFLOW: auto;
+}
 .menu .api-name{}
 .menu .api-desc{margin-top: 10px; color: #888; font-size: 13px}
-.info {width: 80%; position: fixed; top: 10px; left: 20%}
+.info {width: 80%; overflow:right; height:auto; overflow:hidden}
 </style>
