@@ -150,10 +150,14 @@
 
         },
         parseGraphqlArgType(argType){
+          var isList = argType.kind === 'LIST'
+
+          console.log(argType)
           var argTypeName = argType.name
-          var argName = ""
-          if(argType.ofType){
-            argTypeName = argType.ofType.name
+          if(argType.ofType && argType.ofType.ofType){
+              argTypeName = argType.ofType.ofType.name
+          }else if (argType.ofType){
+              argTypeName = argType.ofType.name
           }
           var schemaObj = app.schemaMap[argTypeName]
           var typeName = expandRow.methods.parserSchemaType(argType)
