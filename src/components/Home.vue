@@ -9,7 +9,7 @@
                 Query
             </template>
             <template v-for="(api, index) of queryApis">
-              <MenuItem :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1 || api.description.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
+              <MenuItem class="api-item" :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1 || api.description.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
                   <div class="api-name">
                     <Icon type="md-recording" />
                     {{api.name}} 
@@ -26,7 +26,7 @@
                 Mutation
             </template>
             <template v-for="(api, index) of mutationApis">
-              <MenuItem :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1 || api.description.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
+              <MenuItem class="api-item" :name="api.name" v-if="schemaTitleFilter == '' || api.name.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1 || api.description.toLowerCase().indexOf(schemaTitleFilter.toLowerCase()) != -1">
                   <div class="api-name">
                     <Icon type="md-send" />
                     {{api.name}} 
@@ -219,12 +219,12 @@
 <style scoped>
 .menu {
   float:left;
-  width: 20%;
+  width: 40%;
   height:1000px; 
-  LINE-HEIGHT: 20px; 
   OVERFLOW: auto;
 }
-.menu .api-name{}
-.menu .api-desc{margin-top: 10px; color: #888; font-size: 13px}
-.info {width: 80%; overflow:right; height:auto; overflow:hidden}
+.menu .api-name{float:left; width:40%;height: 100%}
+.menu .api-desc{color: #888; width:60%; height: auto;font-size: 13px; float:left; }
+.menu .api-item{padding:10px; overflow: hidden}
+.info {width: 60%; overflow:right; height:auto; overflow:hidden}
 </style>
